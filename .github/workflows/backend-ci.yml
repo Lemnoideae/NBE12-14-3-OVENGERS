@@ -24,7 +24,9 @@ jobs:
 
   deploy:
     needs: build
-    if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
+    # 3차 저장소는 Kotlin 전환 회귀(step-6) 통과 전까지 배포하지 않는다.
+    # 전환 시 Settings > Secrets and variables > Actions > Variables에 DEPLOY_ENABLED=true 를 등록하면 켜진다.
+    if: vars.DEPLOY_ENABLED == 'true' && github.ref == 'refs/heads/dev' && github.event_name == 'push'
     runs-on: self-hosted
     defaults:
       run:
