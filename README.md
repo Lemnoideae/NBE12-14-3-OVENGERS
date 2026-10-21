@@ -495,7 +495,7 @@ Authorization: Bearer {accessToken}
 ### 저장소 구조
 
 ```
-NBE12-14-2-OVENGERS/
+NBE12-14-3-OVENGERS/
 ├── backend/                # Spring Boot 3.3.4 백엔드 애플리케이션
 │   ├── docker-compose.yml  # 로컬 개발용 MySQL 8.4 컨테이너 구성
 │   └── ...
@@ -529,7 +529,7 @@ NBE12-14-2-OVENGERS/
 
 ### 로컬 개발 환경 실행 안내
 
-모든 안내는 저장소 루트(`NBE12-14-2-OVENGERS/`)에서 출발하는 것을 기준으로 합니다.
+모든 안내는 저장소 루트(`NBE12-14-3-OVENGERS/`)에서 출발하는 것을 기준으로 합니다.
 
 #### 1. 사전 요구사항
 - **Java**: JDK 21
