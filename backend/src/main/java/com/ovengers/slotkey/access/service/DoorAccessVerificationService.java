@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -86,10 +85,9 @@ public class DoorAccessVerificationService {
                 .orElse(null);
 
         DoorAccessToken accessToken =
-                doorAccessTokenService.findOptionalByRawToken(
-                                request.getToken()
-                        )
-                        .orElse(null);
+                doorAccessTokenService.findByRawTokenOrNull(
+                        request.getToken()
+                );
 
         if (accessToken == null) {
             return deny(
@@ -155,7 +153,7 @@ public class DoorAccessVerificationService {
         }
 
         // 출입 가능한 시간인지 확인
-        Optional<AccessDenyReason> timeDenyReason =
+        AccessDenyReason timeDenyReason =
                 doorAccessTimePolicy.findDenyReason(
                         attemptedAt,
                         reservation.getStartTime(),
@@ -163,12 +161,12 @@ public class DoorAccessVerificationService {
                         reservation.getCheckedInAt()
                 );
 
-        if (timeDenyReason.isPresent()) {
+        if (timeDenyReason != null) {
             return deny(
                     actorMember,
                     reservation,
                     requestedSpace,
-                    timeDenyReason.get(),
+                    timeDenyReason,
                     attemptedAt
             );
         }
@@ -232,19 +230,19 @@ public class DoorAccessVerificationService {
             );
         }
 
-        Optional<AccessDenyReason> latestTimeDenyReason =
+        AccessDenyReason latestTimeDenyReason =
                 doorAccessTimePolicy.findDenyReason(
                         attemptedAt,
                         latestReservation.getStartTime(),
                         latestReservation.getEndTime(),
                         latestReservation.getCheckedInAt()
                 );
-        if (latestTimeDenyReason.isPresent()) {
+        if (latestTimeDenyReason != null) {
             return deny(
                     actorMember,
                     latestReservation,
                     requestedSpace,
-                    latestTimeDenyReason.get(),
+                    latestTimeDenyReason,
                     attemptedAt
             );
         }
