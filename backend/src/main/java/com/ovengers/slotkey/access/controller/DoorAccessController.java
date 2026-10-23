@@ -10,7 +10,6 @@ import com.ovengers.slotkey.access.service.DoorAccessVerificationService;
 import com.ovengers.slotkey.global.common.response.ApiResponse;
 import com.ovengers.slotkey.global.security.AuthPrincipal;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -36,7 +35,6 @@ import java.util.List;
         )
 })
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api/v1")
 public class DoorAccessController {
 
@@ -44,6 +42,18 @@ public class DoorAccessController {
     private final DoorAccessLogService doorAccessLogService;
     private final DoorAccessVerificationService doorAccessVerificationService;
     private final Clock clock;
+
+    public DoorAccessController(
+            DoorAccessTokenService doorAccessTokenService,
+            DoorAccessLogService doorAccessLogService,
+            DoorAccessVerificationService doorAccessVerificationService,
+            Clock clock
+    ) {
+        this.doorAccessTokenService = doorAccessTokenService;
+        this.doorAccessLogService = doorAccessLogService;
+        this.doorAccessVerificationService = doorAccessVerificationService;
+        this.clock = clock;
+    }
 
     // 예약에 사용할 출입 토큰 발급
     @Operation(

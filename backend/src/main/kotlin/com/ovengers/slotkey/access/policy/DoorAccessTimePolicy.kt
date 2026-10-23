@@ -15,7 +15,7 @@ class DoorAccessTimePolicy {
 
     // 현재 시각 기준으로 출입 거절 사유 확인
     // 기존 Java 서비스가 Optional로 결과를 처리하므로 반환 타입을 유지한다.
-    // TODO: 출입 서비스의 Kotlin 전환 시 호출부와 함께 nullable 반환으로 변경 예정.
+    // TODO: 출입 서비스의 Kotlin 전환 시 호출부·테스트와 함께 AccessDenyReason? 반환으로 변경하고 Optional을 제거한다.
     fun findDenyReason(
         now: LocalDateTime,
         startAt: LocalDateTime,
