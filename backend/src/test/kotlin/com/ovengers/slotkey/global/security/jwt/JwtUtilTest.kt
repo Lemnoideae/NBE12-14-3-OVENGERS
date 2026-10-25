@@ -58,4 +58,18 @@ class JwtUtilTest {
         assertThatThrownBy { JwtUtil.payloadOrNull("not-a-jwt", "short-key", clock) }
             .isInstanceOf(WeakKeyException::class.java)
     }
+
+    @Test
+    @DisplayName("Clock 인자 없는 JWT 오버로드도 클레임을 보존하고 만료된 토큰을 거절한다")
+    fun defaultClockOverloadsPreserveClaimsAndRejectExpiredToken() {
+        val token = JwtUtil.createToken(secret, 86_400_000L, mapOf("id" to 2_147_483_648L, "sid" to "default-clock-session"))
+        val payload = JwtUtil.payloadOrNull(token, secret)
+        assertThat(payload).isNotNull()
+        assertThat((payload!!["id"] as Number).toLong()).isEqualTo(2_147_483_648L)
+        assertThat(payload["sid"]).isEqualTo("default-clock-session")
+
+        val expiredClock = Clock.fixed(Instant.parse("2020-01-01T00:00:00Z"), ZoneOffset.UTC)
+        val expiredToken = JwtUtil.createToken(secret, 300_000L, mapOf("id" to 1L), null, expiredClock)
+        assertThat(JwtUtil.payloadOrNull(expiredToken, secret)).isNull()
+    }
 }

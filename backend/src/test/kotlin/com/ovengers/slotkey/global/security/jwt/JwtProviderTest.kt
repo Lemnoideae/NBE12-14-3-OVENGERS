@@ -3,6 +3,7 @@ package com.ovengers.slotkey.global.security.jwt
 import com.ovengers.slotkey.member.entity.Member
 import com.ovengers.slotkey.member.entity.MemberRole
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
@@ -62,6 +63,32 @@ class JwtProviderTest {
         if (expectedJvmZone != null) {
             assertThat(actualJvmZone).isEqualTo(expectedJvmZone)
         }
+    }
+
+    @Test
+    @DisplayName("서명 키가 주입되지 않으면 JWT 발급 시 초기화 누락 예외를 전파한다")
+    fun failsIssuanceWhenSecretKeyWasNotInjected() {
+        val clock = Clock.fixed(Instant.parse("2026-10-23T00:00:00Z"), ZoneId.of("UTC"))
+        val provider = JwtProvider(clock)
+        val member = Member("missing-key@example.com", "테스트 회원")
+        ReflectionTestUtils.setField(provider, "expireMillis", 300_000L)
+
+        assertThatThrownBy {
+            provider.genAccessToken(member, "test-session", LocalDateTime.now(clock).plusHours(24))
+        }.isInstanceOf(UninitializedPropertyAccessException::class.java)
+            .hasMessageContaining("secretKey")
+    }
+
+    @Test
+    @DisplayName("서명 키가 주입되지 않으면 JWT 검증 시 토큰 오류로 숨기지 않고 초기화 누락 예외를 전파한다")
+    fun failsVerificationWhenSecretKeyWasNotInjected() {
+        val clock = Clock.fixed(Instant.parse("2026-10-23T00:00:00Z"), ZoneId.of("UTC"))
+        val token = JwtUtil.createToken(TEST_SECRET_KEY, 300_000L, mapOf("id" to 1L), null, clock)
+        val provider = JwtProvider(clock)
+
+        assertThatThrownBy { provider.payloadOrNull(token) }
+            .isInstanceOf(UninitializedPropertyAccessException::class.java)
+            .hasMessageContaining("secretKey")
     }
 
     companion object {
