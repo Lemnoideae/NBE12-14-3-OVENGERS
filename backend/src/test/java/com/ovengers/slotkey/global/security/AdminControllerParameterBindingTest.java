@@ -154,11 +154,11 @@ class AdminControllerParameterBindingTest {
     @DisplayName("회원 @PathVariable 3곳: 파라미터 이름 정보가 없어도 memberId=42L로 정상 해석된다")
     void adminMemberPathVariablesBound() throws Exception {
         Method suspendMethod = AdminMemberController.class.getMethod(
-                "suspend", Long.class, com.ovengers.slotkey.member.dto.request.MemberStatusChangeRequest.class, AuthPrincipal.class);
+                "suspend", long.class, com.ovengers.slotkey.member.dto.request.MemberStatusChangeRequest.class, AuthPrincipal.class);
         Method restoreMethod = AdminMemberController.class.getMethod(
-                "restore", Long.class, com.ovengers.slotkey.member.dto.request.MemberStatusChangeRequest.class, AuthPrincipal.class);
+                "restore", long.class, com.ovengers.slotkey.member.dto.request.MemberStatusChangeRequest.class, AuthPrincipal.class);
         Method grantCreditMethod = AdminMemberController.class.getMethod(
-                "grantCredit", Long.class, com.ovengers.slotkey.member.dto.request.MemberCreditGrantRequest.class, AuthPrincipal.class);
+                "grantCredit", long.class, com.ovengers.slotkey.member.dto.request.MemberCreditGrantRequest.class, AuthPrincipal.class);
 
         MethodParameter suspendParam = createParameter(suspendMethod, 0);
         MethodParameter restoreParam = createParameter(restoreMethod, 0);
@@ -185,9 +185,9 @@ class AdminControllerParameterBindingTest {
     @Test
     @DisplayName("문의 @PathVariable 2곳: 파라미터 이름 정보가 없어도 inquiryId=7L로 정상 해석된다")
     void adminInquiryPathVariablesBound() throws Exception {
-        Method getInquiryMethod = AdminInquiryController.class.getMethod("getInquiry", Long.class);
+        Method getInquiryMethod = AdminInquiryController.class.getMethod("getInquiry", long.class);
         Method answerMethod = AdminInquiryController.class.getMethod(
-                "answer", AuthPrincipal.class, Long.class, com.ovengers.slotkey.inquiry.dto.request.InquiryAnswerRequest.class);
+                "answer", AuthPrincipal.class, long.class, com.ovengers.slotkey.inquiry.dto.request.InquiryAnswerRequest.class);
 
         MethodParameter getInquiryParam = createParameter(getInquiryMethod, 0);
         MethodParameter answerParam = createParameter(answerMethod, 1);
