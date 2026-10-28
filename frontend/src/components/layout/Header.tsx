@@ -82,16 +82,16 @@ export default function Header() {
       </nav>
 
       <div className="header-actions">
-        <NotificationLink memberId={member?.memberId} pathname={pathname} />
         {member ? !isAdmin && (
-          <span className="header-credit" title="크레딧은 1크레딧 = 1원, 예약 결제에만 사용됩니다.">
+          <Link href={ROUTES.creditCharge} className="header-credit" title="크레딧은 1크레딧 = 1원, 예약 결제에만 사용됩니다."
+            aria-label={`${formatCredit(member.balance)}, 충전하기`}
+            aria-current={pathname === ROUTES.creditCharge ? 'page' : undefined}>
             {formatCredit(member.balance)}
-          </span>
+          </Link>
         ) : <>
           <Link href={ROUTES.login} className="btn small">로그인</Link>
           <Link href={ROUTES.signup} className="btn small primary">회원가입</Link>
         </>}
-      </div>
       <details ref={accountRef} className={`home-account-menu${member ? '' : ' guest-account-menu'}`}
         onBlur={(event) => {
           if (event.relatedTarget instanceof Node && !event.currentTarget.contains(event.relatedTarget)) event.currentTarget.open = false;
@@ -112,6 +112,7 @@ export default function Header() {
               {!isAdmin && <span className="account-mobile-credit">{formatCredit(member.balance)}</span>}
             </div>
             <ActiveLink href={ROUTES.myPage}>마이페이지</ActiveLink>
+            {!isAdmin && <ActiveLink href={ROUTES.waitlist}>빈자리 알림</ActiveLink>}
             {!isAdmin && <ActiveLink href={ROUTES.creditCharge}>크레딧 충전하기</ActiveLink>}
             {!isAdmin && <ActiveLink href={ROUTES.creditHistory}>충전 내역</ActiveLink>}
             {!isAdmin && <ActiveLink href={ROUTES.inquiries}>내 문의</ActiveLink>}
@@ -123,6 +124,8 @@ export default function Header() {
           </>}
         </div>
       </details>
+        <NotificationLink memberId={member?.memberId} pathname={pathname} />
+      </div>
     </header>
   );
 }
